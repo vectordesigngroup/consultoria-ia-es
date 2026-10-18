@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vectordesigngroup.github.io/consultoria-ia-es/sitemap.xml
