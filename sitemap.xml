@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://vectordesigngroup.github.io/consultoria-ia-es/</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>1.0</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url><loc>https://vectordesigngroup.github.io/consultoria-ia-es/</loc><lastmod>2026-10-18</lastmod><changefreq>monthly</changefreq><priority>1.0</priority>
+    <video:video>
+      <video:thumbnail_loc>https://vectordesigngroup.github.io/consultoria-ia-es/assets/promo-es-poster.jpg</video:thumbnail_loc>
+      <video:title>Conózcanos en 1 minuto: Vector Design Group</video:title>
+      <video:description>Presentación de Vector Design Group: agentes de chat y voz con IA, redes sociales y contenido, desarrollo web full stack y branding para empresas de Caracas.</video:description>
+      <video:content_loc>https://vectordesigngroup.github.io/consultoria-ia-es/assets/promo-es-16x9.mp4</video:content_loc>
+      <video:duration>59</video:duration>
+    </video:video>
+  </url>
 </urlset>
