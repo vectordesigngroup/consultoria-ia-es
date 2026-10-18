@@ -42,7 +42,7 @@
 
 <header class="site-header">
   <div class="wrap bar">
-    <a class="brand" href="#inicio" aria-label="Inicio">
+    <a class="brand" href="#inicio">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#13296a"/><path d="M14 16h10l8 20 8-20h10L36 50h-8z" fill="#ffb347"/></svg>
       <span data-brand>Vector Design Group</span>
     </a>
@@ -403,10 +403,15 @@
       <p><a class="mail-big" href="mailto:danielsolano@mail.grokbot.com">danielsolano@mail.grokbot.com</a></p>
       <p class="hint" style="color:#9fb0d1">Respondemos en español.</p>
     </div>
-    <form id="form" action="mailto:danielsolano@mail.grokbot.com" method="post" enctype="text/plain">
-      <div><label for="nombre">Su nombre<input id="nombre" name="nombre" autocomplete="name" required></label></div>
-      <div><label for="empresa">Empresa<input id="empresa" name="empresa" autocomplete="organization"></label></div>
-      <div><label for="correo">Su correo electrónico<input id="correo" name="correo" type="email" autocomplete="email" required></label></div>
+    <form id="form" action="https://formsubmit.co/18d09dc0ce548ac0be06049774570b57" method="POST" novalidate>
+      <input type="hidden" name="_subject" value="Consulta desde el sitio web de Vector Design Group">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://vectordesigngroup.github.io/consultoria-ia-es/?enviado=1#contacto">
+      <div class="hp" aria-hidden="true"><label>No llenar este campo<input type="text" name="_honey" tabindex="-1" autocomplete="off"></label></div>
+      <div><label for="nombre">Su nombre<input id="nombre" name="nombre" autocomplete="name" required maxlength="100"></label></div>
+      <div><label for="empresa">Empresa<input id="empresa" name="empresa" autocomplete="organization" maxlength="100"></label></div>
+      <div><label for="correo">Su correo electrónico<input id="correo" name="email" type="email" autocomplete="email" required maxlength="150"></label></div>
       <div><label for="servicio">Servicio de interés
         <select id="servicio" name="servicio">
           <option>Piloto Caracas ($49)</option>
@@ -420,9 +425,10 @@
           <option>Paquete Full-stack</option>
           <option>No estoy seguro, necesito orientación</option>
         </select></label></div>
-      <div><label for="mensaje">Mensaje<textarea id="mensaje" name="mensaje" placeholder="Cuéntenos brevemente sobre su negocio y qué desea lograr."></textarea></label></div>
-      <button class="btn" type="submit">Preparar correo</button>
-      <p class="hint">Al pulsar, se abrirá su programa de correo con el mensaje ya redactado para que lo revise y lo envíe. No guardamos nada en este sitio.</p>
+      <div><label for="mensaje">Mensaje<textarea id="mensaje" name="mensaje" maxlength="2000" placeholder="Cuéntenos brevemente sobre su negocio y qué desea lograr."></textarea></label></div>
+      <button class="btn" type="submit" id="enviar">Enviar mensaje</button>
+      <p id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1"></p>
+      <p class="hint">Al enviar, su nombre, empresa, correo y mensaje viajan cifrados a nuestro buzón mediante el servicio gratuito FormSubmit. Solo los usamos para responderle. Si el envío falla, podrá usar su programa de correo.</p>
     </form>
   </div>
 </section>
@@ -430,7 +436,7 @@
 <section class="privacy" id="privacidad">
   <div class="wrap">
     <h2>Privacidad</h2>
-    <p>Este sitio no usa cookies, rastreadores ni analítica. El formulario solo redacta un correo en su propio dispositivo; usted decide si lo envía. Usaremos sus datos únicamente para responderle. Los videos de YouTube solo se cargan si usted pulsa reproducir; las miniaturas se sirven desde este mismo sitio. Los enlaces externos del portafolio pertenecen a sus respectivos sitios.</p>
+    <p>Este sitio no usa cookies, rastreadores ni analítica. Si usa el formulario de contacto, los datos que escriba (nombre, empresa, correo y mensaje) se envían por conexión cifrada a través de FormSubmit (formsubmit.co), un servicio gratuito de terceros que los reenvía a nuestro correo y puede conservarlos hasta 30 días. Usaremos sus datos únicamente para responderle, no los vendemos ni los compartimos, y puede pedirnos que los eliminemos escribiendo a danielsolano@mail.grokbot.com. Los videos de YouTube solo se cargan si usted pulsa reproducir; las miniaturas se sirven desde este mismo sitio. Los enlaces externos del portafolio pertenecen a sus respectivos sitios.</p>
   </div>
 </section>
 </main>
@@ -470,16 +476,43 @@ document.querySelectorAll("[data-interest]").forEach(a => a.addEventListener("cl
   const s = document.getElementById("servicio"); [...s.options].forEach(o => { if (o.text === a.dataset.interest) s.value = o.value || o.text; });
 }));
 
-// Formulario: redacta un correo (mailto), sin servicios de terceros
-document.getElementById("form").addEventListener("submit", e => {
-  e.preventDefault();
+// Formulario: envío real vía FormSubmit (AJAX) con respaldo por correo (mailto)
+(function () {
+  const form = document.getElementById("form"), st = document.getElementById("form-status"), btn = document.getElementById("enviar");
+  const t0 = Date.now(), KEY = "vdg_sends", LIMIT = 3, WINDOW = 3600e3, COOLDOWN = 30e3;
   const v = id => document.getElementById(id).value.trim();
-  const asunto = "Consulta desde el sitio web: " + v("servicio");
-  const cuerpo = "Hola,\n\nMi nombre es " + v("nombre") + (v("empresa") ? " y represento a " + v("empresa") : "") + ".\n" +
-    "Me interesa: " + v("servicio") + ".\n\n" + (v("mensaje") ? v("mensaje") + "\n\n" : "") +
-    "Mi correo de contacto: " + v("correo") + "\n\nGracias.\n(Enviado desde el sitio de " + BRAND + ")";
-  location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(asunto) + "&body=" + encodeURIComponent(cuerpo);
-});
+  const say = (msg, ok, html) => { st.className = "form-status " + (ok ? "ok" : "err"); if (html) st.innerHTML = msg; else st.textContent = msg; st.focus(); };
+  const mailto = () => {
+    const asunto = "Consulta desde el sitio web: " + v("servicio");
+    const cuerpo = "Hola,\n\nMi nombre es " + v("nombre") + (v("empresa") ? " y represento a " + v("empresa") : "") + ".\n" +
+      "Me interesa: " + v("servicio") + ".\n\n" + (v("mensaje") ? v("mensaje") + "\n\n" : "") +
+      "Mi correo de contacto: " + v("correo") + "\n\nGracias.\n(Enviado desde el sitio de " + BRAND + ")";
+    return "mailto:" + EMAIL + "?subject=" + encodeURIComponent(asunto) + "&body=" + encodeURIComponent(cuerpo);
+  };
+  const recent = () => { try { return JSON.parse(localStorage.getItem(KEY) || "[]").filter(t => Date.now() - t < WINDOW); } catch (e) { return []; } };
+  if (/[?&]enviado=1/.test(location.search)) say("¡Gracias! Recibimos su mensaje y le responderemos por correo en un máximo de 1 día hábil.", true);
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    if (form.elements._honey.value) { say("¡Gracias! Recibimos su mensaje.", true); form.reset(); return; } // robot: se ignora en silencio
+    if (Date.now() - t0 < 3000) { say("Por favor, revise sus datos e intente de nuevo en unos segundos.", false); return; }
+    const r = recent();
+    if (r.length >= LIMIT || (r.length && Date.now() - r[r.length - 1] < COOLDOWN)) { say("Ya enviamos varios mensajes desde este dispositivo. Espere un momento o escríbanos a " + EMAIL + ".", false); return; }
+    btn.disabled = true; btn.textContent = "Enviando…";
+    try {
+      const body = { nombre: v("nombre"), empresa: v("empresa"), email: v("correo"), servicio: v("servicio"), mensaje: v("mensaje"),
+        _subject: "Consulta desde el sitio web: " + v("servicio"), _template: "table", _captcha: "false", _honey: "" };
+      const res = await fetch(form.action.replace("formsubmit.co/", "formsubmit.co/ajax/"), { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || String(data.success) !== "true") throw new Error("send");
+      r.push(Date.now()); try { localStorage.setItem(KEY, JSON.stringify(r)); } catch (e) {}
+      form.reset();
+      say("¡Gracias! Recibimos su mensaje y le responderemos por correo en un máximo de 1 día hábil.", true);
+    } catch (err) {
+      say('No pudimos enviar su mensaje en este momento. Puede <a href="' + mailto().replace(/"/g, "&quot;") + '">enviarlo desde su programa de correo</a> o escribirnos a ' + EMAIL + ".", false, true);
+    } finally { btn.disabled = false; btn.textContent = "Enviar mensaje"; }
+  });
+})();
 </script>
 </body>
 </html>
