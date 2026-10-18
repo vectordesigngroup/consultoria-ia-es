@@ -125,3 +125,17 @@ footer a{color:#dbe4f7}
 .player{margin:0 auto;max-width:960px;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:0 20px 50px rgba(0,0,0,.45)}
 .player video,.video video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
 .player figcaption{padding:.9rem 1.1rem 1.1rem;font-size:.95rem;color:#c3d0ea;background:var(--navy3)}
+
+/* descarga de la presentación */
+.dl{display:grid;gap:1.5rem;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.4rem}
+.dl-thumb{display:block;max-width:300px;width:100%;margin-inline:auto;border-radius:10px;overflow:hidden;border:1px solid var(--line);box-shadow:0 8px 24px rgba(11,27,58,.15);transition:transform .15s}
+.dl-thumb:hover{transform:translateY(-3px)}
+.dl-thumb img{display:block;width:100%;height:auto}
+.dl-body h2{font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.15;margin:.2rem 0 .6rem;color:var(--navy)}
+.dl-body p{color:var(--muted);margin:0 0 .8rem}
+.dl-eyebrow{color:var(--accent2)}
+.dl-body .dl-meta{font-size:.88rem}
+.dl-alt{margin-left:.9rem;font-weight:600;display:inline-block;padding:.5rem 0}
+@media(max-width:480px){.dl-alt{margin:.4rem 0 0}}
+@media(min-width:760px){.dl{grid-template-columns:260px 1fr;gap:2.4rem;padding:2rem}}
+@media(prefers-reduced-motion:reduce){.dl-thumb{transition:none}}
