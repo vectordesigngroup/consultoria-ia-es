@@ -142,4 +142,4 @@ footer a{color:#dbe4f7}
 
 .hero .eyebrow,.dark-sec .eyebrow,.pilot .eyebrow{color:var(--accent)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.form-status{margin:.8rem 0 0;padding:0;font-weight:600;outline:0}.form-status:empty{display:none}.form-status.ok{color:#8ff0b0}.form-status.err{color:#ffd0a0}.form-status a{color:#fff}
+.form-status{margin:.8rem 0 0;padding:0;font-weight:600;outline:0}.form-status:empty{display:none}.form-status.ok{color:#0a6b35}.form-status.err{color:#9a3a00}.form-status a{color:#9a3a00}
