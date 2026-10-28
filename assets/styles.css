@@ -143,3 +143,8 @@ footer a{color:#dbe4f7}
 .hero .eyebrow,.dark-sec .eyebrow,.pilot .eyebrow{color:var(--accent)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form-status{margin:.8rem 0 0;padding:0;font-weight:600;outline:0}.form-status:empty{display:none}.form-status.ok{color:#0a6b35}.form-status.err{color:#9a3a00}.form-status a{color:#9a3a00}
+/* language switch (EN | ES) */
+.langsw{display:inline-flex;border:1px solid rgba(255,255,255,.3);border-radius:999px;overflow:hidden;align-self:flex-start;margin:.6rem 0 0}
+.langsw a{display:inline-block!important;padding:.25rem .75rem!important;font-size:.8rem!important;font-weight:700;letter-spacing:.05em;border:0!important;color:#dbe4f7}
+.langsw a[aria-current]{background:var(--accent);color:var(--navy)}
+@media(min-width:900px){.langsw{margin:0}}
